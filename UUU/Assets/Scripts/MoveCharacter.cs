@@ -21,12 +21,14 @@ public class MoveCharacter : MonoBehaviour
     void Update()
     {
 
+    	
+
         transform.Translate(new Vector3(0, 0, 1) * Time.deltaTime * speed);
 
         if(Input.GetKeyDown(KeyCode.W))
         {
             GetComponent<Animator>().SetBool("Run", true);
-            speed = 10;
+            speed = 11;
         }
 
          if(Input.GetKeyDown(KeyCode.Space))
@@ -40,8 +42,13 @@ public class MoveCharacter : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.A) && onleft == false && mid == true)
         {
-            //transform.position = new Vector3(-3, transform.position.y, transform.position.z);
-            transform.DOMoveX(-3,TransSpeed);
+           if(SceneManager.GetActiveScene().buildIndex ==0)
+           { //transform.position = new Vector3(-3, transform.position.y, transform.position.z);
+            transform.DOMoveX(-3,TransSpeed);}
+            else
+            {
+            	transform.DOMoveX(-4,TransSpeed);
+            }
             
             onleft = true;
             mid = false;
@@ -50,6 +57,7 @@ public class MoveCharacter : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.A) && onright == true && mid == false)
         {
+
             //transform.position = new Vector3(0, transform.position.y, transform.position.z);
             transform.DOMoveX(0, TransSpeed);
 
@@ -60,8 +68,14 @@ public class MoveCharacter : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.D) && onright == false && mid == true)
         {
+        	if(SceneManager.GetActiveScene().buildIndex ==0)
+        	{ 
             //transform.position = new Vector3(3, transform.position.y, transform.position.z);
-            transform.DOMoveX(3, TransSpeed);
+            transform.DOMoveX(3, TransSpeed);}
+            else
+            {
+            	transform.DOMoveX(4, TransSpeed);
+            }
 
             onright = true;
             mid = false;
