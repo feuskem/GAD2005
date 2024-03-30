@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Unity.UI;
 
 public class MoveCharacter : MonoBehaviour
 {
@@ -12,14 +13,61 @@ public class MoveCharacter : MonoBehaviour
     public float TransSpeed = 10f;
     public int coin = 0;
     public int heart = 2;
+    public float Score = 0f;
+    public int ScorePenalty = 1;
 
-    public TextMeshProUGUI coinText, healthText;
+    public TextMeshProUGUI coinText, healthText, scoreText;
     public GameObject failpanel;
+    public GameObject winpanel;
+    public GameObject heart1;
+    public GameObject heart2;
+    public GameObject heart3;
+    
+     
 
-
+    void Start()
+    {
+    	
+    }
     // Update is called once per frame
     void Update()
     {
+
+    	 if (heart>0)
+        	  
+        	  Score = coin*heart/ScorePenalty;
+        	 
+        	  else 
+        	  Score = coin*1/ScorePenalty;
+
+    	if (heart == 3)
+    	{
+    	heart1.SetActive(true);
+    	heart2.SetActive(true);
+    	heart3.SetActive(true);
+        }
+        else if (heart == 2)
+    	{
+    	heart1.SetActive(true);
+    	heart2.SetActive(true);
+    	heart3.SetActive(false);
+        }
+
+      else if (heart == 1)
+    	{
+    	heart1.SetActive(true);
+    	heart2.SetActive(false);
+    	heart3.SetActive(false);
+        }
+
+       else if (heart == 0)
+    	{
+    	heart1.SetActive(false);
+    	heart2.SetActive(false);
+    	heart3.SetActive(false);
+        }
+
+
 
     	
 
@@ -96,22 +144,42 @@ public class MoveCharacter : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if(other.tag == "Finish")
+        {
+        	speed =0;
+        	winpanel.SetActive(true);
+        	 GetComponent<Animator>().SetBool("Victory", true);
+        	 
+              scoreText.text = "Score: " + Score;
+        }
+
         if(other.tag == "Stop")
         {
              GetComponent<Animator>().SetBool("Run", false);
             speed = 0;
-            failpanel.SetActive(true);
+
+            
         }
         else if(other.tag == "Bum")
         {
-        	if(heart == 0)
+        	if(heart <= 1)
         	{
              GetComponent<Animator>().SetBool("Death", true);
+
+             failpanel.SetActive(true);
         	
             speed = 0;}
+            else
+             GetComponent<Animator>().SetTrigger("Hitr");
+            
 
             heart -=1;
-            healthText.text = "Heart:" + heart;
+            ScorePenalty +=1;
+            
+            if(heart >= 1)
+            Destroy(other.gameObject);
+
+
         
         }
         if(other.CompareTag("Coin"))
@@ -131,7 +199,11 @@ public class MoveCharacter : MonoBehaviour
         		heart += 1;
         		
         	}
-        	healthText.text = "Heart:" + heart;
+        	if(heart ==3)
+        	{
+        	coin += 30;
+        	 coinText.text =  coin.ToString();
+        	}
         }
     }
 
@@ -139,10 +211,12 @@ public class MoveCharacter : MonoBehaviour
     public void RestartLevel()
     {
      SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    
     }
 
     public void NextLevel()
     {
+    	
     	if(SceneManager.GetActiveScene().buildIndex ==0)
     	{
     		SceneManager.LoadScene(1);
@@ -153,4 +227,6 @@ public class MoveCharacter : MonoBehaviour
     	}
     }
       
+
+
 }
